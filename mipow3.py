@@ -220,7 +220,8 @@ class MipowLight(Light):
 
     def update(self):
         """Update status."""
-        self._hs = color_util.color_RGB_to_hs(self._bulb.get_colour())
+        self._rgb = self._bulb.get_colour()
+        self._hs = color_util.color_RGB_to_hs(self._rgb)
         self._white = self._bulb.get_white()
         self._state = self._bulb.get_on()
         self._brightness = self.get_bright()
