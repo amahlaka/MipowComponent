@@ -16,6 +16,7 @@ from homeassistant.components.light import (
     FLASH_SHORT, ATTR_EFFECT, SUPPORT_EFFECT, EFFECT_COLORLOOP,
     SUPPORT_FLASH, ATTR_FLASH, PLATFORM_SCHEMA, SUPPORT_WHITE_VALUE)
 import homeassistant.helpers.config_validation as cv
+import homeassistant.util.color as color_util
 REQUIREMENTS = ['mipow==0.2']
 
 _LOGGER = logging.getLogger(__name__)
