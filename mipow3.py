@@ -93,7 +93,7 @@ class MipowLight(Light):
     @property
     def hs_color(self):
         """Return the color property."""
-        return color_util.color_RGB_to_hs(self._rgb)
+        return color_util.color_RGB_to_hs(*self._rgb)
 
     @property
     def white_value(self):
