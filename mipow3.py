@@ -10,8 +10,8 @@ import voluptuous as vol
 
 from homeassistant.const import CONF_DEVICES, CONF_NAME
 from homeassistant.components.light import (
-    ATTR_RGB_COLOR, ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS,
-    SUPPORT_RGB_COLOR, Light,
+    ATTR_HS_COLOR, ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS,
+    SUPPORT_COLOR, Light,
     FLASH_LONG, ATTR_WHITE_VALUE,
     FLASH_SHORT, ATTR_EFFECT, SUPPORT_EFFECT, EFFECT_COLORLOOP,
     SUPPORT_FLASH, ATTR_FLASH, PLATFORM_SCHEMA, SUPPORT_WHITE_VALUE)
@@ -22,7 +22,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'mipow'
 
-SUPPORT_MIPOW_LED = (SUPPORT_RGB_COLOR | SUPPORT_EFFECT |
+SUPPORT_MIPOW_LED = (SUPPORT_COLOR | SUPPORT_EFFECT |
                      SUPPORT_FLASH | SUPPORT_BRIGHTNESS | SUPPORT_WHITE_VALUE)
 
 DEVICE_SCHEMA = vol.Schema({
@@ -62,6 +62,7 @@ class MipowLight(Light):
         self.is_valid = True
         self._bulb = mipow.mipow(self._address)
         self._white = 0
+        self._hs = None
         self._rgb = (0, 0, 0)
         self._brightness = 0
         self._state = False
@@ -89,9 +90,9 @@ class MipowLight(Light):
         return self._state
 
     @property
-    def rgb_color(self):
+    def hs_color(self):
         """Return the color property."""
-        return self._rgb
+        return color_util.color_RGB_to_hs(self._rgb)
 
     @property
     def white_value(self):
@@ -127,6 +128,7 @@ class MipowLight(Light):
 
     def set_rgb(self, red, green, blue):
         """Set the rgb state."""
+        red, green, blue = color_util.color_hs_to_RGB(self._hs)
         return self._bulb.set_rgb(red, green, blue)
 
     def set_white(self, white):
@@ -155,7 +157,7 @@ class MipowLight(Light):
 
     def turn_on(self, **kwargs):
         """Turn the specified light on."""
-        rgb = kwargs.get(ATTR_RGB_COLOR)
+        rgb = color_util.color_hs_to_RGB(kwargs.get(ATTR_HS_COLOR))
         white = kwargs.get(ATTR_WHITE_VALUE)
         bright = kwargs.get(ATTR_BRIGHTNESS)
         flash = kwargs.get(ATTR_FLASH)
@@ -217,7 +219,7 @@ class MipowLight(Light):
 
     def update(self):
         """Update status."""
-        self._rgb = self._bulb.get_colour()
+        self._hs = color_util.color_RGB_to_hs(self._bulb.get_colour())
         self._white = self._bulb.get_white()
         self._state = self._bulb.get_on()
         self._brightness = self.get_bright()
