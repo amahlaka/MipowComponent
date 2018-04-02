@@ -129,7 +129,7 @@ class MipowLight(Light):
 
     def set_rgb(self, red, green, blue):
         """Set the rgb state."""
-        red, green, blue = color_util.color_hs_to_RGB(self._hs)
+        red, green, blue = color_util.color_hs_to_RGB(*self._hs)
         return self._bulb.set_rgb(red, green, blue)
 
     def set_white(self, white):
