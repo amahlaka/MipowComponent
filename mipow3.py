@@ -158,6 +158,7 @@ class MipowLight(Light):
 
     def turn_on(self, **kwargs):
         """Turn the specified light on."""
+        rgb = None
         if ATTR_HS_COLOR in kwargs:
             rgb = color_util.color_hs_to_RGB(*kwargs[ATTR_HS_COLOR])
         white = kwargs.get(ATTR_WHITE_VALUE)
